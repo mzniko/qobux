@@ -115,7 +115,13 @@ class QobuxApp {
 
     // Security: Prevent new window creation
     app.on('web-contents-created', (event, contents) => {
-      contents.setWindowOpenHandler(({ url }) => {
+      contents.setWindowOpenHandler(({ url, referrer }) => {
+        this.log('Window open requested - url:', url, 'referrer:', referrer?.url);
+        const isInitiatedByQobuz = referrer?.url?.startsWith(QobuxApp.QOBUZ_URL) ||
+          referrer?.url?.startsWith('https://www.qobuz.com');
+        if (isInitiatedByQobuz) {
+          return { action: 'allow' };
+        }
         this.log('Blocked new window creation to:', url);
         return { action: 'deny' };
       });

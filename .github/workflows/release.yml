@@ -33,33 +33,14 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-    - name: Setup Flatpak
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y flatpak flatpak-builder
-        flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-        flatpak install --user -y flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08 org.electronjs.Electron2.BaseApp//24.08
-        
-    - name: Build Flatpak
-      run: |
-        flatpak-builder --user --repo=repo --force-clean flatpak-build io.github.Sophokles187.qobux.yml
-        flatpak build-bundle repo qobux.flatpak io.github.Sophokles187.qobux
-        
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
           release/Qobux-*.AppImage
-          qobux.flatpak
         body: |
-          ## Installation
-          
-          ### Flatpak (Recommended)
-          ```bash
-          flatpak install qobux.flatpak
-          flatpak run io.github.Sophokles187.qobux
-          ```
-          
+          ## Installation  
+
           ### AppImage
           ```bash
           chmod +x Qobux-*.AppImage
